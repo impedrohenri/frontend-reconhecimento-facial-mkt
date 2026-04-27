@@ -26,9 +26,10 @@ export default function CadastroAlunoPage() {
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
-    } catch {
-      setMessage("Não foi possível acessar a câmera.");
-    }
+    } catch (err: any) {
+        console.error("ERRO CAMERA:", err);
+        setMessage(err.message || "Não foi possível acessar a câmera.");
+      }
   }
 
   function tirarFoto() {
