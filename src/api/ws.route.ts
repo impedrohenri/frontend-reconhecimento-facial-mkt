@@ -1,3 +1,3 @@
-const WS_ADDRESS = "ws://165.227.197.26:8000";
+const WS_ADDRESS = "wss://faceapp.istros.app/ws";
 
 export default WS_ADDRESS;

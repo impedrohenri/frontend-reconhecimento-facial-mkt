@@ -1,3 +1,3 @@
-const API_ADDRESS = "http://165.227.197.26:8000";
+const API_ADDRESS = "https://faceapp.istros.app/api/";
 
 export default API_ADDRESS;
