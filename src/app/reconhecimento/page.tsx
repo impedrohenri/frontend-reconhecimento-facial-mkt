@@ -1,6 +1,7 @@
 "use client";
 
 import API_ADDRESS from "@/api/api.route";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export default function DetectorPortaria() {
@@ -11,6 +12,10 @@ export default function DetectorPortaria() {
   const [result, setResult] = useState<any>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [permissionDenied, setPermissionDenied] = useState(false);
+
+  const searchParams = useSearchParams();
+
+  const ESP_IP = searchParams.get('ip') || '192.168.1.XXX';
 
   useEffect(() => {
     startCamera();
@@ -64,6 +69,12 @@ export default function DetectorPortaria() {
       });
 
       const data = await response.json();
+
+      if(data?.match) {
+        console.log("ESP IP:", ESP_IP);
+        fetch(`http://${ESP_IP}`)
+      }
+
       setResult(data);
     } catch (error) {
       console.log(error);
