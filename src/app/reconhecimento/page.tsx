@@ -99,6 +99,8 @@ export default function DetectorPortaria() {
         rounded-xl
         object-cover
         scale-x-[-1]
+        border-4  
+        border-(--dark-blue)
       "
       />
 
@@ -129,9 +131,10 @@ export default function DetectorPortaria() {
             {/* Moldura */}
             <div
               className="
-              h-[320px]
-              w-[240px]
-              rounded-[999px]
+              h-96
+              w-72
+              rounded-t-[700px]
+              rounded-b-[999px]
               border-4
               border-(--light-blue)
               shadow-[0_0_40px_rgba(30,251,250,0.5)]
