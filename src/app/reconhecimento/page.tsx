@@ -19,7 +19,7 @@ export default function DetectorPortaria() {
   async function startCamera() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user" },
+        video: { facingMode: "user", width: 1920, height: 1200, frameRate: 30 },
         audio: false,
       });
 
@@ -56,7 +56,7 @@ export default function DetectorPortaria() {
       setPreview(previewUrl);
 
       const form = new FormData();
-      form.append("file", blob, "face.jpg");
+      form.append("photo", blob, "face.jpg");
 
       const response = await fetch(`${API_ADDRESS}/recognize`, {
         method: "POST",
@@ -82,52 +82,168 @@ export default function DetectorPortaria() {
   }
 
   return (
-    <div className="relative h-screen bg-black overflow-hidden">
-      {/* CAMERA */}
+    <div className="relative h-screen overflow-hidden bg-white flex items-center justify-center">
+
+      {/* Camera */}
       <video
         ref={videoRef}
         autoPlay
         playsInline
         muted
-        className="absolute inset-0 w-full h-full object-cover scale-x-[-1]"
+        className="
+        absolute
+        h-full
+        w-full
+        sm:h-auto
+        sm:w-auto
+        rounded-xl
+        object-cover
+        scale-x-[-1]
+      "
       />
 
-      {/* Overlay */}
-      <div className="relative z-10 h-full flex flex-col justify-between p-6">
-        <div className="text-center mt-8">
-          <h1 className="text-white text-3xl font-bold">Portaria</h1>
-          <p className="text-gray-300 mt-2">
-            Alinhe o rosto e pressione verificar
+      {/* Overlay escuro */}
+      <div className="absolute inset-0 bg-black/30" />
+
+      {/* Conteúdo */}
+      <div className="relative z-10 flex h-full flex-col justify-between p-6">
+
+        {/* Header */}
+        <div className="pt-8 text-center">
+
+          <h1 className="text-4xl font-bold text-white">
+            Controle de Acesso
+          </h1>
+
+          <p className="mt-3 text-white/80">
+            Centralize o rosto na moldura
           </p>
+
         </div>
 
-        <div className="flex justify-center">
-          <div className="w-[250px] h-[320px] border-4 border-green-500 rounded-3xl" />
+        {/* Área central */}
+        <div className="flex flex-1 items-center justify-center">
+
+          <div className="relative">
+
+            {/* Moldura */}
+            <div
+              className="
+              h-[320px]
+              w-[240px]
+              rounded-[999px]
+              border-4
+              border-(--light-blue)
+              shadow-[0_0_40px_rgba(30,251,250,0.5)]
+            "
+            />
+
+            {/* Texto */}
+            <div
+              className="
+              absolute
+              left-1/2
+              top-full
+              mt-5
+              -translate-x-1/2
+              rounded-full
+              bg-black/60
+              px-4
+              py-2
+              text-sm
+              text-white
+              w-max
+            "
+            >
+              Posicione o rosto dentro da área
+            </div>
+
+          </div>
+
         </div>
 
+        {/* Botão */}
         <button
           onClick={handleDetect}
           disabled={loading}
-          className="mb-8 bg-green-500 text-black font-bold py-4 rounded-2xl text-xl"
+          className="
+          mx-auto
+          mb-8
+          w-full
+          max-w-md
+          rounded-2xl
+          bg-(--light-blue)
+          py-4
+          text-lg
+          font-bold
+          text-(--dark-blue)
+          transition
+          hover:brightness-95
+          disabled:opacity-50
+        "
         >
-          {loading ? "Verificando..." : "Verificar"}
+          {loading
+            ? "Verificando..."
+            : "Verificar Identidade"}
         </button>
+
       </div>
 
       {/* Resultado */}
       {result && (
-        <div className="absolute bottom-28 left-5 right-5 bg-zinc-900 p-5 rounded-2xl z-20">
+        <div
+          className="
+          absolute
+          left-1/2
+          top-8
+          z-30
+          w-[90%]
+          max-w-lg
+          -translate-x-1/2
+          rounded-3xl
+          border
+          border-white/10
+          bg-zinc-900/95
+          p-6
+          backdrop-blur
+        "
+        >
           {result.match ? (
             <>
-              <h2 className="text-green-500 text-2xl font-bold">
-                Acesso Liberado
-              </h2>
-              <p className="text-white mt-2">Aluno: {result.nome}</p>
+              <div className="mb-2 text-3xl font-bold text-green-400">
+                ✓ Acesso Liberado
+              </div>
+
+              <div className="space-y-1 text-white">
+                <p>
+                  <strong>Aluno:</strong> {result.student.name}
+                </p>
+
+                {result.registration && (
+                  <p>
+                    <strong>Matrícula:</strong>{" "}
+                    {result.registration}
+                  </p>
+                )}
+
+                {result.similarity && (
+                  <p>
+                    <strong>Similaridade:</strong>{" "}
+                    {(result.similarity * 100).toFixed(2)}%
+                  </p>
+                )}
+              </div>
             </>
           ) : (
-            <h2 className="text-red-500 text-2xl font-bold">
-              Não reconhecido
-            </h2>
+            <>
+              <div className="mb-2 text-2xl font-bold text-red-400">
+                ✕ Não Reconhecido
+              </div>
+
+              <p className="text-white/80">
+                {result.error || "Nenhum aluno correspondente foi encontrado."}
+              </p>
+            </>
           )}
         </div>
       )}
@@ -136,11 +252,27 @@ export default function DetectorPortaria() {
       {preview && (
         <img
           src={preview}
-          className="absolute top-5 right-5 w-[70px] h-[90px] rounded-xl object-cover z-20"
+          alt="Captura"
+          className="
+          absolute
+          bottom-6
+          right-6
+          z-20
+          h-28
+          w-20
+          rounded-xl
+          border-2
+          border-white/30
+          object-cover
+          shadow-lg
+        "
         />
       )}
 
-      <canvas ref={canvasRef} className="hidden" />
+      <canvas
+        ref={canvasRef}
+        className="hidden"
+      />
     </div>
   );
 }
