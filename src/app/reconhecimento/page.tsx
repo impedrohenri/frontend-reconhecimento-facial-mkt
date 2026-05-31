@@ -2,9 +2,9 @@
 
 import API_ADDRESS from "@/api/api.route";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 
-export default function DetectorPortaria() {
+function DetectorPortaria() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -288,5 +288,13 @@ export default function DetectorPortaria() {
         className="hidden"
       />
     </div>
+  );
+}
+
+export default function DetectorPage() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <DetectorPortaria />
+    </Suspense>
   );
 }
