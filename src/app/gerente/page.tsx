@@ -1,6 +1,7 @@
 "use client";
 
 import WS_ADDRESS from "@/api/ws.route";
+import Header from "@/components/Header";
 import { useEffect, useState } from "react";
 
 type Evento = {
@@ -46,6 +47,8 @@ ws.onclose = (e) => {
   }, []);
 
   return (
+    <>
+    <Header/>
     <main className="min-h-screen bg-slate-100 p-8">
       <div className="max-w-5xl mx-auto space-y-6">
 
@@ -98,5 +101,6 @@ ws.onclose = (e) => {
         </div>
       </div>
     </main>
+    </>
   );
 }
